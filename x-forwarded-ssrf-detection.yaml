@@ -1,0 +1,25 @@
+id: x-forwarded-ssrf-detection
+
+info:
+  name: X-Forwarded-For SSRF Detection
+  author: coffin
+  severity: high
+  description: Detects SSRF potential by observing how X-Forwarded-For is reflected or used in backend requests.
+  tags: ssrf, x-forwarded, internal, misconfiguration
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/admin"
+      - "{{BaseURL}}/debug"
+    headers:
+      X-Forwarded-For: 127.0.0.1
+
+    matchers:
+      - type: word
+        words:
+          - "internal"
+          - "127.0.0.1"
+          - "localhost"
+        condition: or
+        part: body
