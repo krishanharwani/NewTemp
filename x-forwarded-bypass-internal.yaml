@@ -1,0 +1,30 @@
+id: x-forwarded-bypass-internal
+
+info:
+  name: Internal Access Bypass via X-Forwarded-For
+  author: coffin
+  severity: high
+  description: Tests if internal pages become accessible by spoofing client IP using X-Forwarded-For.
+  tags: bypass, acl, x-forwarded, internal, misconfiguration
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/admin"
+      - "{{BaseURL}}/api/internal"
+      - "{{BaseURL}}/server-status"
+    headers:
+      X-Forwarded-For: 127.0.0.1
+
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "admin"
+          - "internal"
+          - "dashboard"
+        part: body
+        condition: or
