@@ -1,0 +1,21 @@
+id: x-forwarded-open-redirect
+
+info:
+  name: X-Forwarded-Host Open Redirect
+  author: coffin
+  severity: high
+  description: Detects potential open redirect vulnerability via X-Forwarded-Host header.
+  tags: redirect, x-forwarded, misconfiguration
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+    headers:
+      X-Forwarded-Host: evil.com
+
+    matchers:
+      - type: regex
+        part: header
+        regex:
+          - "(?i)location:.*evil\.com"
